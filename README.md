@@ -5,8 +5,14 @@ port:7860
 ```
 networks:
   lan13:
-    external: true
-    name: "lan13"
+    name: lan13
+    driver: macvlan
+    driver_opts:
+      parent: enp6s19
+    ipam:
+      config:
+        - subnet: "192.168.13.0/24"
+          gateway: "192.168.13.1"
 volumes:
   ft-tts-root:
     name: ft-tts-root
@@ -36,7 +42,7 @@ services:
     container_name: "f5-tts"
     hostname: "f5-tts"
     image: "sleechengn/f5-tts:latest"
-    restart: always
+    # restart: always
     environment:
       - TZ=Asia/Shanghai
       - NVIDIA_DRIVER_CAPABILITIES=all
@@ -50,7 +56,9 @@ services:
       resources:
         reservations:
           devices:
-            - capabilities: [ gpu ]
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     networks:
       lan13:
         ipv4_address: 192.168.13.61
