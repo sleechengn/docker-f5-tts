@@ -26,7 +26,9 @@ run set -e \
 	&& git submodule update --init --recursive \
 	&& pip install -e .
 
+volume /root/.local
 volume /root
+volume /opt/venv
 volume /workspace
 add ./docker-entrypoint.sh /
 run chmod +x /docker-entrypoint.sh
